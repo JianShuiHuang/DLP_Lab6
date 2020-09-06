@@ -106,8 +106,8 @@ class DDPG:
         self._target_actor_net.load_state_dict(self._actor_net.state_dict())
         self._target_critic_net.load_state_dict(self._critic_net.state_dict())
         ## TODO ##
-        self._actor_opt = optim.SGD(self._actor_net.parameters(), lr = args.lra, momentum = 0.9, weight_decay = 5e-4)
-        self._critic_opt = optim.SGD(self._critic_net.parameters(), lr = args.lrc, momentum = 0.9, weight_decay = 5e-4)
+        self._actor_opt = optim.SGD(self._actor_net.parameters(), lr = args.lra, momentum = 0.6)
+        self._critic_opt = optim.SGD(self._critic_net.parameters(), lr = args.lrc, momentum = 0.6)
         # action noise
         self._action_noise = GaussianNoise(dim=2)
         # memory
