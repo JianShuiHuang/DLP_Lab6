@@ -115,7 +115,7 @@ class DQN:
             q_next = self._target_net(next_state).detach().max(1)[0].unsqueeze(1)
             q_target = reward + gamma*q_next*(1-done)
         criterion = nn.CrossEntropyLoss()
-        loss = criterion(q_value, q_target).long()
+        loss = criterion(q_value, q_target.long())
         
         # optimize
         self._optimizer.zero_grad()
