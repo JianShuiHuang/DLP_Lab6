@@ -101,8 +101,8 @@ class DDPG:
         self._target_actor_net.load_state_dict(self._actor_net.state_dict())
         self._target_critic_net.load_state_dict(self._critic_net.state_dict())
         ## TODO ##
-        self._actor_opt = optim.Adam(self._actor_net.parameters(), lr=args.lra)
-        self._critic_opt = optim.Adam(self._critic_net.parameters(), lr=args.lrc)
+        self._actor_opt = optim.SGD(self._actor_net.parameters(), lr = args.lra, momentum = 0.9, weight_decay = 5e-4)
+        self._critic_opt = optim.SGD(self._critic_net.parameters(), lr = args.lrc, momentum = 0.9, weight_decay = 5e-4)
         # action noise
         self._action_noise = GaussianNoise(dim=2)
         # memory
@@ -117,7 +117,13 @@ class DDPG:
     def select_action(self, state, noise=True):
         '''based on the behavior (actor) network and exploration noise'''
         ## TODO ##
-        raise NotImplementedError
+        state = torch.from_numpy(state).to('cuda')
+        action = self._actor_net(state).cpu().detach().numpy()
+        
+        if(noise)
+            action = action + self._action_noise.sample()
+        
+        return action
 
     def append(self, state, action, reward, next_state, done):
         self._memory.append(state, action, [reward / 100], next_state,
@@ -143,14 +149,14 @@ class DDPG:
         ## update critic ##
         # critic loss
         ## TODO ##
-        # q_value = ?
-        # with torch.no_grad():
-        #    a_next = ?
-        #    q_next = ?
-        #    q_target = ?
-        # criterion = ?
-        # critic_loss = criterion(q_value, q_target)
-        raise NotImplementedError
+        q_value = critic_net(state, action)
+        with torch.no_grad():
+            a_next = target_actor_net(next_state)
+            q_next = target_critic_net(next_state, a_next)
+            q_target = reward + gamma*q_next*(1-done)
+        criterion = nn.MSELoss()
+        critic_loss = criterion(q_value, q_target)
+        
         # optimize critic
         actor_net.zero_grad()
         critic_net.zero_grad()
@@ -160,9 +166,9 @@ class DDPG:
         ## update actor ##
         # actor loss
         ## TODO ##
-        # action = ?
-        # actor_loss = ?
-        raise NotImplementedError
+        action = actor_net(state)
+        actor_loss = -critic_net(state, action).mean()
+
         # optimize actor
         actor_net.zero_grad()
         critic_net.zero_grad()
@@ -174,7 +180,7 @@ class DDPG:
         '''update target network by _soft_ copying from behavior network'''
         for target, behavior in zip(target_net.parameters(), net.parameters()):
             ## TODO ##
-            raise NotImplementedError
+            target.data.copy_(tau*behavior.data + (1.0-tau)*target.data)
 
     def save(self, model_path, checkpoint=False):
         if checkpoint:
@@ -251,11 +257,21 @@ def test(args, env, agent, writer):
         env.seed(seed)
         state = env.reset()
         ## TODO ##
-        # ...
-        #     if done:
-        #         writer.add_scalar('Test/Episode Reward', total_reward, n_episode)
-        #         ...
-        raise NotImplementedError
+        with torch.no_grad():
+            for i in itertools.count(start=1):
+                # select action
+                action = agent.select_action(state, noise=False)
+                # execute action
+                next_state, reward, done, _ = env.step(action)
+                
+                state = next_state
+                total_reward += reward
+
+                if done:
+                    writer.add_scalar('Test/Episode Reward', total_reward, n_episode)
+                    rewards.append(total_reward)
+                    break
+        
     print('Average Reward', np.mean(rewards))
     env.close()
 
