@@ -70,7 +70,7 @@ class DQN:
         # initialize target network
         self._target_net.load_state_dict(self._behavior_net.state_dict())
         ## TODO ##
-        self._optimizer = optim.Adam(self._behavior_net.parameters(), lr=args.lr)
+        self._optimizer = optim.SGD(self._behavior_net.parameters(), lr = args.lr, momentum = 0.9, weight_decay = 5e-4)
         # memory
         self._memory = ReplayMemory(capacity=args.capacity)
 
@@ -200,7 +200,7 @@ def test(args, env, agent, writer):
         state = env.reset()
         ## TODO ##
         with torch.no_grad():
-            for t in itertools.count(start=1):
+            for i in itertools.count(start=1):
                 # select an action
                 action = agent.select_action(state, epsilon, action_space)
                 epsilon = max(epsilon * args.eps_decay, args.eps_min)
