@@ -220,6 +220,7 @@ def train(args, env, agent, writer):
     print('Start Training')
     total_steps = 0
     ewma_reward = 0
+    rewards = []
     for episode in range(args.episode):
         total_reward = 0
         state = env.reset()
@@ -245,11 +246,13 @@ def train(args, env, agent, writer):
                                   total_steps)
                 writer.add_scalar('Train/Ewma Reward', ewma_reward,
                                   total_steps)
+                rewards.append(total_reward)
                 print(
                     'Step: {}\tEpisode: {}\tLength: {:3d}\tTotal reward: {:.2f}\tEwma reward: {:.2f}'
                     .format(total_steps, episode, t, total_reward,
                             ewma_reward))
                 break
+    np.save("train_reward_ddpg", rewards)
     env.close()
 
 
