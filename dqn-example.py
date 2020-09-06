@@ -70,7 +70,7 @@ class DQN:
         # initialize target network
         self._target_net.load_state_dict(self._behavior_net.state_dict())
         ## TODO ##
-        self._optimizer = optim.SGD(self._behavior_net.parameters(), lr = args.lr, momentum = 0.9)
+        self._optimizer = optim.Adam(self._behavior_net.parameters(), lr = args.lr)
         # memory
         self._memory = ReplayMemory(capacity=args.capacity)
 
