@@ -53,7 +53,7 @@ class Net(nn.Module):
 
     def forward(self, x):
         ## TODO ##
-        x = torch.tensor(x)
+        x = torch.tensor(x, device='cuda')
         x = self.linear_1(x)
         x = self.activ_1(x)
         x = self.linear_2(x)
