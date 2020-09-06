@@ -120,7 +120,7 @@ class DDPG:
         state = torch.from_numpy(state).to('cuda')
         action = self._actor_net(state).cpu().detach().numpy()
         
-        if(noise)
+        if noise == True:
             action = action + self._action_noise.sample()
         
         return action
