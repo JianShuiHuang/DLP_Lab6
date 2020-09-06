@@ -110,7 +110,7 @@ class DQN:
             self.batch_size, self.device)
 
         ## TODO ##
-        q_value = self._behavior_net(state).gather(1, action)
+        q_value = self._behavior_net(state).gather(1, action.long())
         with torch.no_grad():
             q_next = self._target_net(next_state).detach().max(1)[0].unsqueeze(1)
             q_target = reward + gamma*q_next*(1-done)
