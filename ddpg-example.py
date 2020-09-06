@@ -52,7 +52,7 @@ class ActorNet(nn.Module):
         self.activ_1 = nn.ReLU()
 
         # layer 2
-        self.linear_2 = nn.LInear(hidden_dim[0], hidden_dim[1], bias=False)
+        self.linear_2 = nn.Linear(hidden_dim[0], hidden_dim[1], bias=False)
         self.activ_2 = nn.ReLU()
 
         # layer 3
