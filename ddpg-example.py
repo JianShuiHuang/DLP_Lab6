@@ -45,7 +45,7 @@ class ReplayMemory:
         for item in zip(*transitions):
             transition.append(torch.tensor(item, dtype=torch.float, device=device))
         
-        return trainsition
+        return transition
 
 
 class ActorNet(nn.Module):
