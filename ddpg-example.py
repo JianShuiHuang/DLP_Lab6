@@ -40,7 +40,12 @@ class ReplayMemory:
     def sample(self, batch_size, device):
         '''sample a batch of transition tensors'''
         ## TODO ##
-        raise NotImplementedError
+        transitions = random.sample(self.buffer, batch_size)
+        transition = []
+        for item in trainsitions:
+            transition.append(item)
+        
+        return (torch.tensor(transition, dtype=torch.float, device=device))
 
 
 class ActorNet(nn.Module):
