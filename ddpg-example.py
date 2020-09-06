@@ -43,9 +43,9 @@ class ReplayMemory:
         transitions = random.sample(self.buffer, batch_size)
         transition = []
         for item in zip(*transitions):
-            transition.append(item)
+            transition.append(torch.tensor(item, dtype=torch.float, device=device))
         
-        return (torch.tensor(transition, dtype=torch.float, device=device))
+        return trainsition
 
 
 class ActorNet(nn.Module):
