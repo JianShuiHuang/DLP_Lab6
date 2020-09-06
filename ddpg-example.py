@@ -42,7 +42,7 @@ class ReplayMemory:
         ## TODO ##
         transitions = random.sample(self.buffer, batch_size)
         transition = []
-        for item in transitions:
+        for item in zip(*transitions):
             transition.append(item)
         
         return (torch.tensor(transition, dtype=torch.float, device=device))
